@@ -16,4 +16,6 @@ public class ProductViewModel
     public int StockQuantity { get; set; }
     public string ImageUrl { get; set; }
     public string SubCategoryName { get; set; }
+    public List<ColorViewModel> AvailableColors { get; set; }
+    public List<SizeViewModel> AvailableSizes { get; set; }
 }
