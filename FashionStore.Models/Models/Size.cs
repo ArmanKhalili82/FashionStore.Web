@@ -8,7 +8,6 @@ namespace FashionStore.Models.Models
     {
         public int Id { get; set; }
 
-        [Required]
         [DisplayName("Product Size")]
         public ProductSize ProductSize { get; set; }
 

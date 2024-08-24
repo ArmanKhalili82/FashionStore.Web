@@ -32,9 +32,17 @@ public class ProductsController : Controller
             Price = p.Price,
             StockQuantity = p.StockQuantity,
             ImageUrl = p.ImageUrl,
-            AvailableColors = p.Colors.Select(c => new ColorViewModel){
-                name
-            }
+            AvailableColors = p.Colors.Select(c => new ColorViewModel
+            {
+                Name = c.Name,
+                HexValue = c.HexValue,
+                ImageUrl = c.ImageUrl,
+
+            }).ToList(),
+            AvailableSizes = p.Sizes.Select(a => new SizeViewModel
+            {
+                ProductSize = a.ProductSize
+            })
         }).ToListAsync();
         //var products = await _productsService.GetAllProducts();
         //var colors = await _context.colors.ToListAsync();
