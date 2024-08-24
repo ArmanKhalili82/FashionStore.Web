@@ -24,7 +24,7 @@ public class ProductsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var product = await _context.products.Include(x => x.Colors).Select(p => new ProductViewModel
+        var product = await _context.products.Include(x => x.Colors).Include(b => b.Sizes).Select(p => new ProductViewModel
         {
             Name = p.Name,
             Description = p.Description,
@@ -42,7 +42,7 @@ public class ProductsController : Controller
             AvailableSizes = p.Sizes.Select(a => new SizeViewModel
             {
                 ProductSize = a.ProductSize
-            })
+            }).ToList(),
         }).ToListAsync();
         //var products = await _productsService.GetAllProducts();
         //var colors = await _context.colors.ToListAsync();
