@@ -1,4 +1,5 @@
 using FashionStore.Business.CategoryService;
+using FashionStore.Business.ColorService;
 using FashionStore.Business.ProductsService;
 using FashionStore.Business.SubCategoryService;
 using FashionStore.DataAccess.Data;
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
+builder.Services.AddScoped<IColorService, ColorService>();
 
 var app = builder.Build();
 
