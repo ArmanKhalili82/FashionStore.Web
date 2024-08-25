@@ -58,9 +58,11 @@
         <label>Select Available Colors</label>
         @foreach (var color in Model.AvailableColors)
         {
+            bool isChecked = Model.SelectedColors.Contains(color.Id);
+
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="SelectedColors" value="@color.Id" 
-                       @(Model.SelectedColors.Contains(color.Id) ? "checked" : "") />
+                <input class="form-check-input" type="checkbox" name="SelectedColors" value="@color.Id"
+                @(isChecked ? "checked" : null) />
                 <label class="form-check-label">
                     <span style="background-color:@color.HexValue; display:inline-block; width:20px; height:20px; border-radius:50%;"></span>
                     @color.Name
@@ -74,9 +76,12 @@
         <label>Select Available Sizes</label>
         @foreach (var size in Model.AvailableSizes)
         {
+            bool isChecked = Model.SelectedSizes.Contains(size.Id);
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="SelectedSizes" value="@size.Id" 
-                       @(Model.SelectedSizes.Contains(size.Id) ? "checked" : "") />
+                <input class="form-check-input" type="checkbox" name="SelectedSizes" value="@size.Id"
+                @(isChecked ? "checked" : null) />
+                @* <input class="form-check-input" type="checkbox" asp-for="SelectedSizes" value="@size.Id" 
+                       @(Model.SelectedSizes.Contains(size.Id) ? "checked" : "") /> *@
                 <label class="form-check-label">@size.ProductSize</label>
             </div>
         }
