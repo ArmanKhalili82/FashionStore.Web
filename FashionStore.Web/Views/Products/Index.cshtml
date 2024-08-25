@@ -1,5 +1,5 @@
-﻿@using FashionStore.Models.Models
-@model IEnumerable<Product>
+﻿@using FashionStore.ViewModels
+@model IEnumerable<ProductViewModel>
 
 <div class="container">
     <div class="row pt-4 pb-2">
@@ -18,27 +18,15 @@
     <table class="table table-bordered table-striped" id="myTable">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(x => x.ImageUrl)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.ShortDescription)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.Colors)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(x => x.SubCategoryId)
-                </th>
+                <th>@Html.DisplayNameFor(x => x.First().ImageUrl)</th>
+                <th>@Html.DisplayNameFor(x => x.First().Name)</th>
+                <th>@Html.DisplayNameFor(x => x.First().ShortDescription)</th>
+                <th>@Html.DisplayNameFor(x => x.First().Description)</th>
+                <th>@Html.DisplayNameFor(x => x.First().Price)</th>
+                <th>@Html.DisplayNameFor(x => x.First().AvailableColors)</th>
+                <th>@Html.DisplayNameFor(x => x.First().AvailableSizes)</th>
+                <th>@Html.DisplayNameFor(x => x.First().StockQuantity)</th>
+                <th>@Html.DisplayNameFor(x => x.First().SubCategoryName)</th>
                 <th></th>
             </tr>
         </thead>
@@ -50,10 +38,38 @@
                         <img src="~/@item.ImageUrl" width="200px" height="150px" />
                     </td>
                     <td>@item.Name</td>
+                    <td>@item.ShortDescription</td>
                     <td>@item.Description</td>
-                    <td>@item.Price</td>
-                    @* <td>@item.isAvailable</td>
-                    <td>@item.Category.Name</td> *@
+                    <td>@item.Price.ToString("C")</td> <!-- Assuming currency formatting -->
+                    <td>
+                        <!-- Display Available Colors -->
+                        @if (item.AvailableColors.Any())
+                        {
+                            <ul>
+                                @foreach (var color in item.AvailableColors)
+                                {
+                                    <li>
+                                        <span style="background-color:@color.HexValue; display:inline-block; width:20px; height:20px; border-radius:50%;"></span>
+                                        @color.Name
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                    <td>
+                        <!-- Display Available Sizes -->
+                        @if (item.AvailableSizes.Any())
+                        {
+                            <ul>
+                                @foreach (var size in item.AvailableSizes)
+                                {
+                                    <li>@size.ProductSize</li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                    <td>@item.StockQuantity</td>
+                    <td>@item.SubCategoryName</td>
                     <td>
                         <div class="w-75 btn-group" role="group">
                             <a asp-controller="Products" asp-action="EditProduct" asp-route-id="@item.Id" class="btn btn-primary">

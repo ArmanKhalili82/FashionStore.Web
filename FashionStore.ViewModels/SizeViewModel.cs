@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FashionStore.Models.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,7 @@ namespace FashionStore.ViewModels;
 public class SizeViewModel
 {
     public int Id { get; set; }
-    public string ProductSize { get; set; }
-    //public ProductSize ProductSize { get; set; }
+    public ProductSize ProductSize { get; set; }
 }
 
 //public enum ProductSize

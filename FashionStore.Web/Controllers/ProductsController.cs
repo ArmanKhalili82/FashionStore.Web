@@ -41,7 +41,7 @@ public class ProductsController : Controller
             }).ToList(),
             AvailableSizes = p.Sizes.Select(a => new SizeViewModel
             {
-                ProductSize = a.ProductSize.ToString()
+                ProductSize = a.ProductSize
             }).ToList(),
         }).ToListAsync();
         return View(product);
@@ -51,64 +51,202 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult CreateProduct()
     {
-        ViewData["SubCategoryId"] = new SelectList(_context.subCategories.ToList(), "Id", "Name");
-        return View();
+        var model = new ProductCreateViewModel
+        {
+            AvailableColors = _context.colors.Select(c => new ColorViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                HexValue = c.HexValue
+            }).ToList(),
+
+            AvailableSizes = _context.sizes.Select(s => new SizeViewModel
+            {
+                Id = s.Id,
+                ProductSize = s.ProductSize
+            }).ToList(),
+        };
+        ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name");
+
+        return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateProduct(Product products, IFormFile image)
+    public async Task<IActionResult> CreateProduct(ProductCreateViewModel model, IFormFile image)
     {
-        if (image != null)
+        if (ModelState.IsValid)
         {
-            var name = Path.Combine(_environment.WebRootPath + "/Images", Path.GetFileName(image.FileName));
-            await image.CopyToAsync(new FileStream(name, FileMode.Create));
-            products.ImageUrl = "Images/" + image.FileName;
+            var product = new Product
+            {
+                Name = model.Name,
+                ShortDescription = model.ShortDescription,
+                Description = model.Description,
+                Price = model.Price,
+                StockQuantity = model.StockQuantity,
+                SubCategoryId = model.SubCategoryId
+            };
+
+            // Handle image upload
+            if (image != null)
+            {
+                var fileName = Path.GetFileName(image.FileName);
+                var filePath = Path.Combine(_environment.WebRootPath, "Images", fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+                product.ImageUrl = "Images/" + fileName;
+            }
+
+            // Add selected colors and sizes
+            product.Colors = _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToList();
+            product.Sizes = _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToList();
+
+            _context.products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
         }
-        await _productsService.Create(products);
-        return RedirectToAction("Index");
+
+        // Reload dropdowns and checkbox options in case of validation errors
+        model.AvailableColors = _context.colors.Select(c => new ColorViewModel
+        {
+            Id = c.Id,
+            Name = c.Name,
+            HexValue = c.HexValue
+        }).ToList();
+
+        model.AvailableSizes = _context.sizes.Select(s => new SizeViewModel
+        {
+            Id = s.Id,
+            ProductSize = s.ProductSize
+        }).ToList();
+
+        //model.SubCategories = new SelectList(_context.subCategories, "Id", "Name");
+
+        return View(model);
     }
 
     [HttpGet]
     public async Task<IActionResult> EditProduct(int id)
     {
-        ViewData["CategoryId"] = new SelectList(_context.categories.ToList(), "Id", "Name");
-        var product = await _productsService.GetProductById(id);
-        return View(product);
+        var product = await _context.products
+            .Include(p => p.Colors)
+            .Include(p => p.Sizes)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var model = new ProductEditViewModel
+        {
+            Id = product.Id,
+            Name = product.Name,
+            ShortDescription = product.ShortDescription,
+            Description = product.Description,
+            Price = product.Price,
+            StockQuantity = product.StockQuantity,
+            ImageUrl = product.ImageUrl,
+            SelectedColors = product.Colors.Select(c => c.Id).ToList(),
+            SelectedSizes = product.Sizes.Select(s => s.Id).ToList(),
+            SubCategoryId = product.SubCategoryId,
+
+            AvailableColors = _context.colors.Select(c => new ColorViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                HexValue = c.HexValue
+            }).ToList(),
+
+            AvailableSizes = _context.sizes.Select(s => new SizeViewModel
+            {
+                Id = s.Id,
+                ProductSize = s.ProductSize
+            }).ToList()
+        };
+
+        ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name", model.SubCategoryId);
+
+        return View(model);
     }
+
 
     [HttpPost]
-    public async Task<IActionResult> EditProduct(Product product, IFormFile image)
+    public async Task<IActionResult> EditProduct(ProductEditViewModel model, IFormFile image)
     {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name", model.SubCategoryId);
+            return View(model);
+        }
+
+        var product = await _context.products
+            .Include(p => p.Colors)
+            .Include(p => p.Sizes)
+            .FirstOrDefaultAsync(p => p.Id == model.Id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        product.Name = model.Name;
+        product.ShortDescription = model.ShortDescription;
+        product.Description = model.Description;
+        product.Price = model.Price;
+        product.StockQuantity = model.StockQuantity;
+        product.SubCategoryId = model.SubCategoryId;
+
+        // Handle image upload if new image is provided
+        // Handle image upload separately
         if (image != null)
         {
-
-            var name = Path.Combine(_environment.WebRootPath + "/Images", Path.GetFileName(image.FileName));
-            await image.CopyToAsync(new FileStream(name, FileMode.Create));
-            product.ImageUrl = "Images/" + image.FileName;
-
-            if (!string.IsNullOrEmpty(product.ImageUrl))
+            var fileName = Path.GetFileName(image.FileName);
+            var filePath = Path.Combine(_environment.WebRootPath, "Images", fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                //Delete The Old Image
-                var oldImagePath = Path.Combine(name, product.ImageUrl.TrimStart('\\'));
-
-                if (System.IO.File.Exists(oldImagePath))
-                {
-                    System.IO.File.Delete(oldImagePath);
-                }
-
-                await image.CopyToAsync(new FileStream(name, FileMode.Create));
-                product.ImageUrl = "Images/" + image.FileName;
+                await image.CopyToAsync(stream);
             }
+            product.ImageUrl = "Images/" + fileName; // Save the new image path
         }
-        await _productsService.Update(product);
+
+        // Update colors
+        product.Colors.Clear();
+        product.Colors = _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToList();
+
+        // Update sizes
+        product.Sizes.Clear();
+        product.Sizes = _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToList();
+
+        _context.Update(product);
+        await _context.SaveChangesAsync();
+
         return RedirectToAction("Index");
     }
+
 
     [HttpGet]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var product = await _productsService.GetProductById(id);
-        return View(product);
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var model = new ProductViewModel
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Price = product.Price,
+            StockQuantity = product.StockQuantity,
+            ImageUrl = product.ImageUrl
+        };
+
+        return View(model);
     }
 
     [HttpPost, ActionName("DeleteProduct")]
