@@ -41,20 +41,10 @@ public class ProductsController : Controller
             }).ToList(),
             AvailableSizes = p.Sizes.Select(a => new SizeViewModel
             {
-                ProductSize = a.ProductSize
+                ProductSize = a.ProductSize.ToString()
             }).ToList(),
         }).ToListAsync();
-        //var products = await _productsService.GetAllProducts();
-        //var colors = await _context.colors.ToListAsync();
-        //var sizes = await _context.sizes.ToListAsync();
-        //var productVm = new ProductDetailsViewModel
-        //{
-        //    Products = products,
-        //    AvailableColors = colors,
-        //    AvailableSizes = sizes
-        //};
-        //return View(productVm);
-        return View();
+        return View(product);
     }
 
 

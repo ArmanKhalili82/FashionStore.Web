@@ -9,14 +9,15 @@ namespace FashionStore.ViewModels;
 public class SizeViewModel
 {
     public int Id { get; set; }
-    public ProductSize ProductSize { get; set; }
+    public string ProductSize { get; set; }
+    //public ProductSize ProductSize { get; set; }
 }
 
-public enum ProductSize
-{
-    small,
-    medium,
-    large,
-    xlarge,
-    xxlarge
-}
+//public enum ProductSize
+//{
+//    small,
+//    medium,
+//    large,
+//    xlarge,
+//    xxlarge
+//}
