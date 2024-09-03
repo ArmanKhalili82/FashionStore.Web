@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FashionStore.DataAccess\FashionStore.DataAccess.csproj" />
-    <ProjectReference Include="..\FashionStore.Models\FashionStore.Models.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="OrderService\" />
+    <ProjectReference Include="..\FashionStore.DataAccess\FashionStore.DataAccess.csproj" />
+    <ProjectReference Include="..\FashionStore.Models\FashionStore.Models.csproj" />
   </ItemGroup>
 
 </Project>

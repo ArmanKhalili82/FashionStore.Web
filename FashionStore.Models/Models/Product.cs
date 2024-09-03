@@ -24,6 +24,10 @@ namespace FashionStore.Models.Models
         [Required(ErrorMessage = "Stock Quantity is required")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock Quantity must be a positive number")]
         public int StockQuantity { get; set; }
+        public bool IsOutOfStock => StockQuantity <= 0; // Checks if the product is out of stock
+        public bool IsLowOnStock => StockQuantity > 0 && StockQuantity <= LowStockThreshold;
+
+        public const int LowStockThreshold = 5; // Defines when the stock is considered low
 
         public string ImageUrl { get; set; }
 

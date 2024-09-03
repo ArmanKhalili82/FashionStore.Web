@@ -99,8 +99,8 @@ public class ProductsController : Controller
             }
 
             // Add selected colors and sizes
-            product.Colors = _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToList();
-            product.Sizes = _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToList();
+            product.Colors = await _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToListAsync();
+            product.Sizes = await _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToListAsync();
 
             _context.products.Add(product);
             await _context.SaveChangesAsync();
@@ -214,11 +214,11 @@ public class ProductsController : Controller
 
         // Update colors
         product.Colors.Clear();
-        product.Colors = _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToList();
+        product.Colors = await _context.colors.Where(c => model.SelectedColors.Contains(c.Id)).ToListAsync();
 
         // Update sizes
         product.Sizes.Clear();
-        product.Sizes = _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToList();
+        product.Sizes = await _context.sizes.Where(s => model.SelectedSizes.Contains(s.Id)).ToListAsync();
 
         _context.Update(product);
         await _context.SaveChangesAsync();

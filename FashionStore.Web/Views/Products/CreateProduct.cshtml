@@ -49,7 +49,7 @@
         @foreach (var color in Model.AvailableColors)
         {
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="SelectedColors" value="@color.Id" />
+                <input class="form-check-input" type="checkbox" name="SelectedColors" value="@color.Id" />
                 <label class="form-check-label">
                     <span style="background-color:@color.HexValue; display:inline-block; width:20px; height:20px; border-radius:50%;"></span>
                     @color.Name
@@ -64,7 +64,7 @@
         @foreach (var size in Model.AvailableSizes)
         {
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="SelectedSizes" value="@size.Id" />
+                <input class="form-check-input" type="checkbox" name="SelectedSizes" value="@size.Id" />
                 <label class="form-check-label">@size.ProductSize</label>
             </div>
         }

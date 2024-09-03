@@ -11,6 +11,7 @@ namespace FashionStore.Models.Models;
 public class Order
 {
     public int Id { get; set; }
+    public string OrderNo { get; set; }
     [DisplayName("User Name")]
     public int UserId { get; set; }
     [ForeignKey("UserId")]

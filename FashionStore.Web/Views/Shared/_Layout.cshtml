@@ -1,4 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using FashionStore.Models.Models
+@using FashionStore.Web.Utility
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    int count = 0;
+    List<Product> products = HttpContextAccessor.HttpContext.Session.Get<List<Product>>("products");
+    if (products == null)
+    {
+        products = new List<Product>();
+    }
+    count = products.Count();
+
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -36,9 +51,22 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Color" asp-action="Index">Color</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cart">
+                                <i class="bi bi-cart-fill"></i>
+                                (@count)
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @if (HttpContextAccessor.HttpContext.Session.GetInt32("userId") != null)
+                    {
+                        @HttpContextAccessor.HttpContext.Session.GetString("userName")
+                        <span>
+                            <a asp-action="Logout" asp-controller="Auth">Logout</a>
+                        </span>
+                    }
                 </div>
             </div>
         </nav>
