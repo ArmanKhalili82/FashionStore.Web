@@ -15,5 +15,6 @@ public class Cart
     public int UserId { get; set; }
     [ForeignKey("UserId")]
     public User User { get; set; }
-    public ICollection<CartItem> CartItems { get; set; }
+    public List<CartItem> Items { get; set; } = new List<CartItem>();
+    public decimal TotalPrice => Items.Sum(item => item.Product.Price * item.Quantity);
 }

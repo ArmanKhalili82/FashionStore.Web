@@ -83,6 +83,7 @@ public class ProductsController : Controller
                 Description = model.Description,
                 Price = model.Price,
                 StockQuantity = model.StockQuantity,
+                IsFeatured = model.IsFeatured,
                 SubCategoryId = model.SubCategoryId
             };
 
@@ -148,6 +149,7 @@ public class ProductsController : Controller
             Description = product.Description,
             Price = product.Price,
             StockQuantity = product.StockQuantity,
+            IsFeatured = product.IsFeatured,
             ImageUrl = product.ImageUrl,
             SelectedColors = product.Colors.Select(c => c.Id).ToList(),
             SelectedSizes = product.Sizes.Select(s => s.Id).ToList(),

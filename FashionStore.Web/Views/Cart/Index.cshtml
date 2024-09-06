@@ -1,0 +1,57 @@
+﻿@using FashionStore.Models.Models
+@model Cart
+
+<div class="container mt-4">
+    <h2>Your Shopping Cart</h2>
+
+    @if (Model.Items.Count == 0)
+    {
+        <p>Your cart is empty.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Product.Name</td>
+                        <td>
+                            <form asp-action="UpdateQuantity" method="post" class="form-inline">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="quantity" value="@item.Quantity" class="form-control" style="width: 60px;" />
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
+                        <td>@item.Product.Price.ToString("C")</td>
+                        <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4>Total: @Model.TotalPrice.ToString("C")</h4>
+
+        <form asp-action="ClearCart" method="post">
+            <button type="submit" class="btn btn-warning">Clear Cart</button>
+        </form>
+
+        <a href="@Url.Action("Checkout", "Order")" class="btn btn-success">Proceed to Checkout</a>
+    }
+</div>
+

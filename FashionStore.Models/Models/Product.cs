@@ -28,6 +28,8 @@ namespace FashionStore.Models.Models
         public bool IsLowOnStock => StockQuantity > 0 && StockQuantity <= LowStockThreshold;
 
         public const int LowStockThreshold = 5; // Defines when the stock is considered low
+        public int SalesCount { get; set; }
+        public bool IsFeatured {  get; set; }
 
         public string ImageUrl { get; set; }
 

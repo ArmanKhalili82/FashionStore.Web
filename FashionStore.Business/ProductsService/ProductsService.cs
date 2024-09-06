@@ -37,6 +37,32 @@ public class ProductsService: IProductsService
         return products;
     }
 
+    public async Task<List<Product>> GetCarouselProducts()
+    {
+        var carouselProducts = await _context.products
+            .Take(8)
+            .ToListAsync();
+        return carouselProducts;
+    }
+
+    public async Task<List<Product>> GetFeaturedProducts()
+    {
+        var featuredProducts = await _context.products
+            .Where(p => p.IsFeatured)
+            .Take(6)
+            .ToListAsync();
+        return featuredProducts;
+    }
+
+    public async Task<List<Product>> GetPopularProducts()
+    {
+        var poularProducts = await _context.products
+            .OrderByDescending(p => p.SalesCount)
+            .Take(6)
+            .ToListAsync();
+        return poularProducts;
+    }
+
     public async Task<Product> GetProductById(int id)
     {
         var product = await _context.products.Include(x => x.SubCategory).FirstOrDefaultAsync(x => x.Id == id);

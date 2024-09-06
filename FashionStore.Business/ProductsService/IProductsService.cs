@@ -10,6 +10,9 @@ namespace FashionStore.Business.ProductsService;
 public interface IProductsService
 {
     Task<List<Product>> GetAllProducts();
+    Task<List<Product>> GetFeaturedProducts();
+    Task<List<Product>> GetPopularProducts();
+    Task<List<Product>> GetCarouselProducts();
     Task<Product> GetProductById(int id);
     Task Create(Product products);
     Task Update(Product products);

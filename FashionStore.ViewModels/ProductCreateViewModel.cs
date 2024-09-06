@@ -14,6 +14,7 @@ public class ProductCreateViewModel
     public decimal Price { get; set; }
     public int StockQuantity { get; set; }
     //public IFormFile Image { get; set; } // For uploading the image
+    public bool IsFeatured { get; set; }
     public string Image {  get; set; }
     // For selecting available colors
     public List<int> SelectedColors { get; set; }

@@ -1,3 +1,4 @@
+using FashionStore.Business.CartService;
 using FashionStore.Business.CategoryService;
 using FashionStore.Business.ColorService;
 using FashionStore.Business.OrderService;
@@ -20,6 +21,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ISubCategoryService, SubCategoryService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();

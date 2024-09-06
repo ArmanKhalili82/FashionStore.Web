@@ -1,0 +1,90 @@
+﻿@using FashionStore.Models.Models
+@model Product
+@using FashionStore.Web.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    List<Product> products = HttpContextAccessor.HttpContext.Session.Get<List<Product>>("products");
+    Product product = null;
+    if (products != null)
+    {
+        product = products.FirstOrDefault(c => c.Id == Model.Id);
+    }
+}
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <img src="~/@Model.ImageUrl" class="img-fluid" alt="@Model.Name" />
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1>@Model.Name</h1>
+            <p>@Model.Description</p>
+
+            <!-- Price -->
+            <h4>Price: @Model.Price.ToString("C")</h4>
+
+            <!-- Stock Availability -->
+            @if (Model.StockQuantity > 0)
+            {
+                <p class="text-success">In Stock</p>
+            }
+            else
+            {
+                <p class="text-danger">Out of Stock</p>
+            }
+
+            <!-- Available Colors -->
+            @if (Model.Colors?.Any() == true)
+            {
+                <div>
+                    <strong>Available Colors:</strong>
+                    <ul class="list-inline">
+                        @foreach (var color in Model.Colors)
+                        {
+                            <li class="list-inline-item">
+                                <span style="background-color:@color.HexValue; display:inline-block; width:20px; height:20px; border-radius:50%;"></span>
+                                @color.Name
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Available Sizes -->
+            @if (Model.Sizes?.Any() == true)
+            {
+                <div>
+                    <strong>Available Sizes:</strong>
+                    <ul class="list-inline">
+                        @foreach (var size in Model.Sizes)
+                        {
+                            <li class="list-inline-item">@size.ProductSize</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <!-- Add to Cart Button -->
+            <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" value="Add To Cart" class="btn btn-primary mt-3" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Optional: Additional Product Information -->
+    <div class="mt-5">
+        <h3>Additional Information</h3>
+        <p>More details about the product can go here...</p>
+    </div>
+</div>

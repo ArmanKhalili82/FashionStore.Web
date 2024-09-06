@@ -1,6 +1,7 @@
 using FashionStore.Business.ProductsService;
 using FashionStore.DataAccess.Data;
 using FashionStore.Models.Models;
+using FashionStore.ViewModels;
 using FashionStore.Web.Models;
 using FashionStore.Web.Utility;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +22,18 @@ namespace FashionStore.Web.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (HttpContext.Session.GetInt32("userId") != null)
             {
-                return View();
+                var model = new HomePageViewModel
+                {
+                    ShowAllProducts = await _productService.GetAllProducts(),
+                    CarouselProducts = await _productService.GetCarouselProducts(),
+                    FeaturedProducts = await _productService.GetFeaturedProducts(),
+                    PopularProducts = await _productService.GetPopularProducts()
+                };
+                return View(model);
             }
             return RedirectToAction("Login", "Auth");
         }
