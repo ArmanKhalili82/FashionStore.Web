@@ -48,7 +48,8 @@ public class AuthController : Controller
         var user = new User
         {
             UserName = vm.UserName,
-            PasswordHash = vm.Password
+            PasswordHash = vm.Password,
+            Email = vm.Email
         };
         await _userService.Register(user);
         return RedirectToAction("Login");

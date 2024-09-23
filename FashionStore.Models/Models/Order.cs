@@ -12,6 +12,9 @@ public class Order
 {
     public int Id { get; set; }
     public string OrderNo { get; set; }
+    public string CustomerName { get; set; }
+    public string CustomerEmail { get; set; }
+    public string ShippingAddress { get; set; }
     [DisplayName("User Name")]
     public int UserId { get; set; }
     [ForeignKey("UserId")]

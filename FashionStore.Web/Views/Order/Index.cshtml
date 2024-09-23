@@ -1,0 +1,39 @@
+﻿﻿@using FashionStore.Models.Models
+@model IEnumerable<Order>
+
+<div class="container">
+    <div class="row pt-4 pb-2">
+        <div class="col-6">
+            <h2 class="text-primary">
+                Order History
+            </h2>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.OrderDate.ToString("g")</td>
+                    <td>@item.TotalAmount.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary border form-control">
+            Back To List
+        </a>
+    </div>
+</div>

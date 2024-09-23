@@ -109,15 +109,15 @@ namespace FashionStore.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public IActionResult Cart()
-        {
-            List<Product> products = HttpContext.Session.Get<List<Product>>("products");
-            if (products == null)
-            {
-                products = new List<Product>();
-            }
-            return View(products);
-        }
+        //[HttpGet]
+        //public IActionResult Cart()
+        //{
+        //    List<Product> products = HttpContext.Session.Get<List<Product>>("products");
+        //    if (products == null)
+        //    {
+        //        products = new List<Product>();
+        //    }
+        //    return View(products);
+        //}
     }
 }

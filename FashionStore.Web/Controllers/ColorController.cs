@@ -1,6 +1,8 @@
 ﻿using FashionStore.Business.ColorService;
 using FashionStore.Models.Models;
+using FashionStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FashionStore.Web.Controllers
 {
@@ -26,17 +28,56 @@ namespace FashionStore.Web.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> CreateColor(Color color, IFormFile image)
+        //{
+        //    if (image!= null)
+        //    {
+        //        var name = Path.Combine(_environment.WebRootPath + "/Colors", Path.GetFileName(image.FileName));
+        //        await image.CopyToAsync(new FileStream(name, FileMode.Create));
+        //        color.ImageUrl = "Colors/" + image.FileName;
+        //    }
+        //    await _colorService.Create(color);
+        //    return RedirectToAction("index");
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> CreateColor(Color color, IFormFile image)
+        public async Task<IActionResult> CreateColor(ColorViewModel model, IFormFile image)
         {
-            if (image!= null)
+            if (ModelState.IsValid)
             {
-                var name = Path.Combine(_environment.WebRootPath + "/Colors", Path.GetFileName(image.FileName));
-                await image.CopyToAsync(new FileStream(name, FileMode.Create));
-                color.ImageUrl = "Colors/" + image.FileName;
+                var color = new Color
+                {
+                    Name = model.Name,
+                    HexValue = model.HexValue,
+                    ImageUrl = model.ImageUrl
+                };
+
+                // Handle file upload
+                if (image != null)
+                {
+                    var fileName = Path.GetFileName(image.FileName);
+                    var filePath = Path.Combine(_environment.WebRootPath, "Images", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+
+                    // Set the ImageUrl property
+                    color.ImageUrl = "Images/" + fileName;
+                }
+                else
+                {
+                    // Provide a default value if an image is not uploaded
+                    color.ImageUrl = "Images/default.png";  // Make sure this file exists
+                }
+
+                await _colorService.Create(color);
+                return RedirectToAction(nameof(Index));
             }
-            await _colorService.Create(color);
-            return RedirectToAction("index");
+
+            return View(model);
         }
 
         [HttpGet]
