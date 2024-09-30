@@ -1,4 +1,5 @@
 ﻿using FashionStore.Business.ColorService;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using FashionStore.Models.Models;
 using FashionStore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +10,8 @@ namespace FashionStore.Web.Controllers
     public class ColorController : Controller
     {
         private IColorService _colorService;
-        private Microsoft.AspNetCore.Hosting.IWebHostEnvironment _environment;
-        public ColorController(IColorService colorService, IWebHostEnvironment environment)
+        private Microsoft.AspNetCore.Hosting.IHostingEnvironment _environment;
+        public ColorController(IColorService colorService, Microsoft.AspNetCore.Hosting.IHostingEnvironment environment)
         {
             _colorService = colorService;
             _environment = environment;
@@ -44,41 +45,41 @@ namespace FashionStore.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateColor(ColorViewModel model, IFormFile image)
         {
-            if (ModelState.IsValid)
+            var color = new Color
             {
-                var color = new Color
-                {
-                    Name = model.Name,
-                    HexValue = model.HexValue,
-                    ImageUrl = model.ImageUrl
-                };
+                Name = model.Name,
+                HexValue = model.HexValue,
+                ImageUrl = model.ImageUrl
+            };
 
-                // Handle file upload
-                if (image != null)
-                {
-                    var fileName = Path.GetFileName(image.FileName);
-                    var filePath = Path.Combine(_environment.WebRootPath, "Images", fileName);
+            // Handle file upload
+            if (image != null)
+            {
+                var name = Path.Combine(_environment.WebRootPath + "/Colors", Path.GetFileName(image.FileName));
+                await image.CopyToAsync(new FileStream(name, FileMode.Create));
+                color.ImageUrl = "Colors/" + image.FileName;
+                //var fileName = Path.GetFileName(image.FileName);
+                //var filePath = Path.Combine(_environment.WebRootPath, "Colors", fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await image.CopyToAsync(stream);
-                    }
+                //using (var stream = new FileStream(filePath, FileMode.Create))
+                //{
+                //    await image.CopyToAsync(stream);
+                //}
 
-                    // Set the ImageUrl property
-                    color.ImageUrl = "Images/" + fileName;
-                }
-                else
-                {
-                    // Provide a default value if an image is not uploaded
-                    color.ImageUrl = "Images/default.png";  // Make sure this file exists
-                }
-
-                await _colorService.Create(color);
-                return RedirectToAction(nameof(Index));
+                //// Set the ImageUrl property
+                //color.ImageUrl = "Colors/" + fileName;
             }
+            //else
+            //{
+            //    // Provide a default value if an image is not uploaded
+            //    color.ImageUrl = "Colors/default.png";  // Make sure this file exists
+            //}
 
-            return View(model);
+            await _colorService.Create(color);
+            return RedirectToAction(nameof(Index));
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> EditColor(int id)
@@ -96,19 +97,19 @@ namespace FashionStore.Web.Controllers
                 await image.CopyToAsync(new FileStream(name, FileMode.Create));
                 color.ImageUrl = "Colors/" + image.FileName;
 
-                if (!string.IsNullOrEmpty(color.ImageUrl))
-                {
-                    //Delete The Old Image
-                    var oldImagePath = Path.Combine(name, color.ImageUrl.TrimStart('\\'));
+                //if (!string.IsNullOrEmpty(color.ImageUrl))
+                //{
+                //    //Delete The Old Image
+                //    var oldImagePath = Path.Combine(name, color.ImageUrl.TrimStart('\\'));
 
-                    if (System.IO.File.Exists(oldImagePath))
-                    {
-                        System.IO.File.Delete(oldImagePath);
-                    }
+                //    if (System.IO.File.Exists(oldImagePath))
+                //    {
+                //        System.IO.File.Delete(oldImagePath);
+                //    }
 
-                    await image.CopyToAsync(new FileStream(name, FileMode.Create));
-                    color.ImageUrl = "Colors/" + image.FileName;
-                }
+                //    await image.CopyToAsync(new FileStream(name, FileMode.Create));
+                //    color.ImageUrl = "Colors/" + image.FileName;
+                //}
             }
             await _colorService.Update(color);
             return RedirectToAction("Index");

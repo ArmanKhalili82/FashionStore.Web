@@ -27,4 +27,11 @@
     <Folder Include="wwwroot\Colors\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\Colors\default.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
