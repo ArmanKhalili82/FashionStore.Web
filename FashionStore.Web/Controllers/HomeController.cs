@@ -4,6 +4,7 @@ using FashionStore.Models.Models;
 using FashionStore.ViewModels;
 using FashionStore.Web.Models;
 using FashionStore.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

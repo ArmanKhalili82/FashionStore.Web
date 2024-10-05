@@ -1,5 +1,31 @@
 ﻿@using FashionStore.Models.Models
-@model List<Category>
+@model IEnumerable<Category>
+
+<h2>Categories</h2>
+
+<ul>
+    @foreach (var category in Model)
+    {
+        <li>
+            @category.Name
+            @if (category.SubCategories != null && category.SubCategories.Any())
+            {
+                <ul>
+                    @foreach (var subCategory in category.SubCategories)
+                    {
+                        <li>@subCategory.Name</li>
+                    }
+                </ul>
+            }
+        </li>
+    }
+</ul>
+
+<p>
+    <a href="@Url.Action("Upsert", "Category")">Create New Category</a>
+</p>
+
+@* @model List<Category>
 
 <div class="container">
     <div class="row pt-4 pb-2">
@@ -43,4 +69,4 @@
             }
         </tbody>
     </table>
-</div>
+</div> *@

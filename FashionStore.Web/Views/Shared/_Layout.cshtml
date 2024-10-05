@@ -42,9 +42,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="SubCategory" asp-action="Index">Sub Category</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
                         </li>
                         <li class="nav-item">
@@ -60,13 +57,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    @if (HttpContextAccessor.HttpContext.Session.GetInt32("userId") != null)
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="Auth" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-secondary">Logout</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary" asp-controller="Auth" asp-action="Login">Login</a>
+                    }
+                    @* @if (HttpContextAccessor.HttpContext.Session.GetInt32("userId") != null)
                     {
                         @HttpContextAccessor.HttpContext.Session.GetString("userName")
                         <span>
                             <a asp-action="Logout" asp-controller="Auth">Logout</a>
                         </span>
-                    }
+                    } *@
                 </div>
             </div>
         </nav>

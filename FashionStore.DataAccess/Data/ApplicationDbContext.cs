@@ -1,4 +1,5 @@
 ﻿using FashionStore.Models.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FashionStore.DataAccess.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {
@@ -26,8 +27,15 @@ public class ApplicationDbContext : DbContext
     public DbSet<Size> sizes { get; set; }
     public DbSet<Review> reviews { get; set; }
     public DbSet<ShippingInfo> shippingInfos { get; set; }
-    public DbSet<SubCategory> subCategories { get; set; }
     public DbSet<User> users { get; set; }
     public DbSet<Wishlist> wishlists { get; set; }
     public DbSet<WishlistItem> wishlistItems { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Category>()
+            .HasOne(c => c.ParentCategory)
+            .WithMany(c => c.SubCategories)
+            .HasForeignKey(c => c.CategoryId);
+    }
 }

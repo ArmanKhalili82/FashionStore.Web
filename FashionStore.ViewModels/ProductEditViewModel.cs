@@ -16,7 +16,7 @@ public class ProductEditViewModel
     public decimal Price { get; set; }
     public int StockQuantity { get; set; }
     public bool IsFeatured { get; set; }
-    public string ImageUrl { get; set; } // Existing image URL
+    public string? ImageUrl { get; set; } // Existing image URL
     //public IFormFile Image { get; set; } // New image upload
 
     public List<int> SelectedColors { get; set; }
@@ -25,5 +25,4 @@ public class ProductEditViewModel
     public List<int> SelectedSizes { get; set; }
     public List<SizeViewModel> AvailableSizes { get; set; }
 
-    public int SubCategoryId { get; set; }  // Selected SubCategory
 }

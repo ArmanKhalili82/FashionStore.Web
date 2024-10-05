@@ -47,6 +47,101 @@ public class ProductsController : Controller
         return View(product);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Upsert(int? id)
+    {
+        // If id is null, it's a new product (create mode)
+        if (id == null)
+        {
+            var createModel = new ProductCreateViewModel
+            {
+                AvailableColors = _context.colors.Select(c => new ColorViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    HexValue = c.HexValue
+                }).ToList(),
+
+                AvailableSizes = _context.sizes.Select(s => new SizeViewModel
+                {
+                    Id = s.Id,
+                    ProductSize = s.ProductSize
+                }).ToList(),
+            };
+
+            return View(createModel);
+            //return View(new Product());
+        }
+
+        // Otherwise, it's an existing product (edit mode)
+        var product = await _context.products
+            .Include(p => p.Colors)
+            .Include(p => p.Sizes)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (product == null)
+        {
+            return NotFound();
+        }
+
+        var model = new ProductEditViewModel
+        {
+            Id = product.Id,
+            Name = product.Name,
+            ShortDescription = product.ShortDescription,
+            Description = product.Description,
+            Price = product.Price,
+            StockQuantity = product.StockQuantity,
+            IsFeatured = product.IsFeatured,
+            ImageUrl = product.ImageUrl,
+            SelectedColors = product.Colors.Select(c => c.Id).ToList(),
+            SelectedSizes = product.Sizes.Select(s => s.Id).ToList(),
+
+            AvailableColors = _context.colors.Select(c => new ColorViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                HexValue = c.HexValue
+            }).ToList(),
+
+            AvailableSizes = _context.sizes.Select(s => new SizeViewModel
+            {
+                Id = s.Id,
+                ProductSize = s.ProductSize
+            }).ToList()
+        };
+
+
+        return View(model);
+        //var product = await _context.colors.FindAsync(id);
+        //if (product == null)
+        //{
+        //    return NotFound();
+        //}
+        //return View(product);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Upsert(Product product)
+    {
+        if (ModelState.IsValid)
+        {
+            if (product.Id == 0)  // Create new product
+            {
+                await _productsService.Create(product);
+            }
+            else  // Update existing product
+            {
+                await _productsService.Update(product);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+        return View(product);
+        /*ProductCreateViewModel createModel, ProductEditViewModel model, IFormFile image*/
+    }
+
+
 
     [HttpGet]
     public IActionResult CreateProduct()
@@ -66,7 +161,6 @@ public class ProductsController : Controller
                 ProductSize = s.ProductSize
             }).ToList(),
         };
-        ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name");
 
         return View(model);
     }
@@ -84,7 +178,6 @@ public class ProductsController : Controller
                 Price = model.Price,
                 StockQuantity = model.StockQuantity,
                 IsFeatured = model.IsFeatured,
-                SubCategoryId = model.SubCategoryId
             };
 
             // Handle image upload
@@ -122,9 +215,6 @@ public class ProductsController : Controller
             Id = s.Id,
             ProductSize = s.ProductSize
         }).ToList();
-
-        //model.SubCategories = new SelectList(_context.subCategories, "Id", "Name");
-
         return View(model);
     }
 
@@ -153,7 +243,6 @@ public class ProductsController : Controller
             ImageUrl = product.ImageUrl,
             SelectedColors = product.Colors.Select(c => c.Id).ToList(),
             SelectedSizes = product.Sizes.Select(s => s.Id).ToList(),
-            SubCategoryId = product.SubCategoryId,
 
             AvailableColors = _context.colors.Select(c => new ColorViewModel
             {
@@ -169,7 +258,6 @@ public class ProductsController : Controller
             }).ToList()
         };
 
-        ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name", model.SubCategoryId);
 
         return View(model);
     }
@@ -180,7 +268,6 @@ public class ProductsController : Controller
     {
         if (!ModelState.IsValid)
         {
-            ViewBag.SubCategories = new SelectList(_context.subCategories, "Id", "Name", model.SubCategoryId);
             return View(model);
         }
 
@@ -199,7 +286,6 @@ public class ProductsController : Controller
         product.Description = model.Description;
         product.Price = model.Price;
         product.StockQuantity = model.StockQuantity;
-        product.SubCategoryId = model.SubCategoryId;
 
         // Handle image upload if new image is provided
         // Handle image upload separately

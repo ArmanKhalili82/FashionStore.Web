@@ -15,7 +15,7 @@ public class ProductCreateViewModel
     public int StockQuantity { get; set; }
     //public IFormFile Image { get; set; } // For uploading the image
     public bool IsFeatured { get; set; }
-    public string Image {  get; set; }
+    public string? Image {  get; set; }
     // For selecting available colors
     public List<int> SelectedColors { get; set; }
     public List<ColorViewModel> AvailableColors { get; set; }
@@ -25,7 +25,5 @@ public class ProductCreateViewModel
     public List<SizeViewModel> AvailableSizes { get; set; }
 
     // For selecting a subcategory
-    public int SubCategoryId { get; set; }
-    //public SelectList SubCategories { get; set; }
 }
 

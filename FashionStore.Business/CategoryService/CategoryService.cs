@@ -28,7 +28,10 @@ public class CategoryService: ICategoryService
 
     public async Task<List<Category>> GetAllCategories()
     {
-        var category = await _context.categories.ToListAsync();
+        var category = await _context.categories
+            .Include(c => c.SubCategories)  // Eagerly load subcategories
+            .Where(c => c.CategoryId == null)  // Only top-level categories
+            .ToListAsync();
         return category;
     }
 

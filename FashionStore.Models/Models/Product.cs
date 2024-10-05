@@ -31,13 +31,12 @@ namespace FashionStore.Models.Models
         public int SalesCount { get; set; }
         public bool IsFeatured {  get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
-        [DisplayName("Sub Category")]
-        public int SubCategoryId { get; set; }
+        //[DisplayName("Sub Category")]
+        //public int SubCategoryId { get; set; }
 
-        [ForeignKey("SubCategoryId")]
-        public SubCategory SubCategory { get; set; }
+        //[ForeignKey("SubCategoryId")]
 
         public ICollection<Size> Sizes { get; set; }
 

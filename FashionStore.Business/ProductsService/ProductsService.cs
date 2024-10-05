@@ -33,7 +33,7 @@ public class ProductsService: IProductsService
 
     public async Task<List<Product>> GetAllProducts()
     {
-        var products = await _context.products.Include(x => x.SubCategory).ToListAsync();
+        var products = await _context.products.ToListAsync();
         return products;
     }
 
@@ -65,7 +65,7 @@ public class ProductsService: IProductsService
 
     public async Task<Product> GetProductById(int id)
     {
-        var product = await _context.products.Include(x => x.SubCategory).FirstOrDefaultAsync(x => x.Id == id);
+        var product = await _context.products.FirstOrDefaultAsync(x => x.Id == id);
         return product;
     }
 

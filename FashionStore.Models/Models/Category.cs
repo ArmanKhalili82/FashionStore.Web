@@ -10,5 +10,7 @@ public class Category
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public ICollection<SubCategory> SubCategories { get; set; }
+    public int? CategoryId { get; set; }  // Parent CategoryId (nullable for top-level categories)
+    public Category ParentCategory { get; set; }  // Self-referencing relationship
+    public ICollection<Category> SubCategories { get; set; }  // Navigation property for subcategories
 }

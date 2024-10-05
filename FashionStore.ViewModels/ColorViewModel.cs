@@ -16,5 +16,5 @@ public class ColorViewModel
     //[RegularExpression(@"^#[0-9A-Fa-f]{6}$", ErrorMessage = "Invalid hex value")]
     public string HexValue { get; set; }
     //public string ImageUrl { get; set; } = "";
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 }

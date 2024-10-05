@@ -1,9 +1,13 @@
-﻿@* @using FashionStore.ViewModels
-@model ColorViewModel
+﻿@using FashionStore.Models.Models
+@model Color
 
-<h2>Create Color</h2>
+@{
+    ViewBag.Title = Model.Id == 0 ? "Create Color" : "Edit Color";
+}
 
-<form asp-action="CreateColor" enctype="multipart/form-data" method="post">
+<h2>@ViewBag.Title</h2>
+
+<form asp-action="Upsert" enctype="multipart/form-data" method="post">
     <div class="form-group">
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
@@ -22,7 +26,5 @@
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form> *@
+    <button type="submit" class="btn btn-primary">@Model.Id == 0 ? "Create" : "Save Changes"</button>
+</form>
