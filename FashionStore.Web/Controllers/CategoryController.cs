@@ -50,21 +50,32 @@ public class CategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Upsert(Category category)
     {
-        if (ModelState.IsValid)
-        {
-            if (category.Id == 0)  // Create new category
-            {
-                await _categoryService.Create(category);
-            }
-            else  // Update existing category
-            {
-                await _categoryService.Update(category);
-            }
-            return RedirectToAction(nameof(Index));
-        }
-        // Repopulate ParentCategories for the dropdown in case of validation errors
         ViewBag.ParentCategories = new SelectList(_context.categories, "Id", "Name", category.CategoryId);
-        return View(category);
+
+        if (category.Id == 0)  // Create new category
+        {
+            await _categoryService.Create(category);
+        }
+        else  // Update existing category
+        {
+            await _categoryService.Update(category);
+        }
+        return RedirectToAction(nameof(Index));
+        //if (ModelState.IsValid)
+        //{
+        //    if (category.Id == 0)  // Create new category
+        //    {
+        //        await _categoryService.Create(category);
+        //    }
+        //    else  // Update existing category
+        //    {
+        //        await _categoryService.Update(category);
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
+        //// Repopulate ParentCategories for the dropdown in case of validation errors
+        //ViewBag.ParentCategories = new SelectList(_context.categories, "Id", "Name", category.CategoryId);
+        //return View(category);
     }
 
     //[HttpGet]
